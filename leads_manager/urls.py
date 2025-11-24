@@ -1,5 +1,5 @@
 """
-URL configuration for leads_manager project.
+URL configuration for CRM Marketing Automation Platform.
 """
 from django.contrib import admin
 from django.urls import path, include

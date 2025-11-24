@@ -1,5 +1,5 @@
 """
-Django settings for leads_manager project.
+Django settings for CRM Marketing Automation Platform.
 """
 
 import os
@@ -87,7 +87,7 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'djongo',
-#         'NAME': os.environ.get('MONGODB_NAME', 'email-leads-manager'),
+#         'NAME': os.environ.get('MONGODB_NAME', 'crm-marketing-automation-platform'),
 #         'HOST': os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/'),
 #     }
 # }

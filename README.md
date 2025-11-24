@@ -1,6 +1,6 @@
-# Leads Manager Server
+# CRM Marketing Automation Platform
 
-Django REST API server for Email Leads Manager application. This is a Python/Django port of the Node.js email-leads-manager-server.
+Django REST API server for CRM Marketing Automation Platform. A comprehensive CRM solution for lead management, email outreach, and marketing automation.
 
 ## Features
 
@@ -40,7 +40,7 @@ DEBUG=True
 JWT_SECRET=your-jwt-secret-key-here
 FRONTEND_URL=http://localhost:3000
 MONGODB_URI=mongodb://localhost:27017/
-MONGODB_NAME=email-leads-manager
+MONGODB_NAME=crm-marketing-automation-platform
 NYLAS_API_KEY=your-nylas-api-key-here
 NYLAS_API_URI=https://api.nylas.com
 ```
@@ -172,7 +172,7 @@ By default, the project uses SQLite. To use MongoDB, you'll need to:
 The project is organized into modular Django apps, each handling a specific domain:
 
 ```
-leads-manager-server/
+crm-marketing-automation-platform/
 ├── leads_manager/          # Django project settings
 │   ├── settings.py         # Project settings
 │   ├── urls.py            # Main URL configuration

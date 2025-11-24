@@ -1,5 +1,5 @@
 """
-WSGI config for leads_manager project.
+WSGI config for CRM Marketing Automation Platform.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

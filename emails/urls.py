@@ -7,5 +7,6 @@ router.register(r'', EmailViewSet, basename='email')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('send/', include('emails.send.urls')),
 ]
 

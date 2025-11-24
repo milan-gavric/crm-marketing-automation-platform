@@ -1,8 +1,10 @@
-import os
+"""
+Nylas email sending service
+"""
+import logging
 from django.conf import settings
 from nylas import Client
 from typing import List, Optional
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +52,10 @@ class NylasEmailService:
             body_type: 'html' or 'text' (default: 'html')
         
         Returns:
-            dict: Response from Nylas API
+            dict: Response from Nylas API containing message_id, thread_id, etc.
+        
+        Raises:
+            Exception: If email sending fails
         """
         try:
             # Prepare recipients
@@ -97,9 +102,12 @@ class NylasEmailService:
             raise Exception(f"Failed to send email: {str(e)}")
 
 
-def get_nylas_service() -> NylasEmailService:
+def get_nylas_service() -> Optional[NylasEmailService]:
     """
     Factory function to get NylasEmailService instance
+    
+    Returns:
+        NylasEmailService instance or None if configuration is missing
     """
     try:
         return NylasEmailService()

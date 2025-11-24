@@ -48,7 +48,7 @@ class JWTAuthentication(BaseAuthentication):
 def generate_token(user):
     import jwt
     from django.conf import settings
-    from datetime import datetime, timedelta
+    from datetime import datetime
 
     payload = {
         'id': str(user.id),

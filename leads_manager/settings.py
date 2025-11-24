@@ -167,3 +167,7 @@ JWT_EXPIRATION_DELTA = timedelta(days=7)
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 
+# Nylas Settings
+NYLAS_API_KEY = os.environ.get('NYLAS_API_KEY', '')
+NYLAS_API_URI = os.environ.get('NYLAS_API_URI', 'https://api.nylas.com')
+

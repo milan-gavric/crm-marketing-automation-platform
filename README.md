@@ -41,6 +41,8 @@ JWT_SECRET=your-jwt-secret-key-here
 FRONTEND_URL=http://localhost:3000
 MONGODB_URI=mongodb://localhost:27017/
 MONGODB_NAME=email-leads-manager
+NYLAS_API_KEY=your-nylas-api-key-here
+NYLAS_API_URI=https://api.nylas.com
 ```
 
 5. Run migrations:
@@ -87,6 +89,7 @@ The server will run on `http://localhost:8000` by default.
 - `GET /api/email/{id}/` - Get a specific email
 - `PUT /api/email/{id}/` - Update an email
 - `DELETE /api/email/{id}/` - Delete an email
+- `POST /api/email/send/` - Send email via Nylas
 
 ### Templates
 - `GET /api/template/message/` - Get all message templates (with pagination, search, industry filters)
@@ -94,6 +97,69 @@ The server will run on `http://localhost:8000` by default.
 
 ### Health Check
 - `GET /health` - Server health check
+
+## Send Email Endpoint
+
+The send email endpoint (`POST /api/email/send/`) allows you to send emails using Nylas. 
+
+### Request Body
+
+```json
+{
+  "grant_id": "nylas_grant_id_here",
+  "to": ["recipient@example.com"],
+  "subject": "Email Subject",
+  "body": "<html><body><h1>Hello</h1><p>This is the email body in HTML</p></body></html>",
+  "cc": ["cc@example.com"],
+  "bcc": ["bcc@example.com"],
+  "reply_to": ["reply@example.com"],
+  "body_type": "html"
+}
+```
+
+### Required Fields
+- `grant_id`: Nylas grant ID (connected account ID)
+- `to`: Array of recipient email addresses
+- `subject`: Email subject line
+- `body`: Email body content (HTML or plain text)
+
+### Optional Fields
+- `cc`: Array of CC email addresses
+- `bcc`: Array of BCC email addresses
+- `reply_to`: Array of reply-to email addresses
+- `body_type`: Either "html" or "text" (default: "html")
+
+### Response
+
+Success response (200):
+```json
+{
+  "success": true,
+  "message": "Email sent successfully",
+  "data": {
+    "success": true,
+    "message_id": "message_id_from_nylas",
+    "thread_id": "thread_id_from_nylas",
+    "grant_id": "grant_id_used"
+  }
+}
+```
+
+Error response (400/500):
+```json
+{
+  "error": "Error message",
+  "details": "Detailed error information"
+}
+```
+
+### Nylas Setup
+
+1. Sign up for a Nylas account at https://www.nylas.com
+2. Get your API key from the Nylas dashboard
+3. Set up OAuth to connect email accounts and get grant IDs
+4. Add `NYLAS_API_KEY` to your `.env` file
+5. Optionally set `NYLAS_API_URI` if using a custom API URI
 
 ## Database
 

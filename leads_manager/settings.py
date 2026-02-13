@@ -1,5 +1,5 @@
 """
-Django settings for leads_manager project.
+Django settings for CRM Marketing Automation Platform.
 """
 
 import os
@@ -33,7 +33,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'api',
+    'users',
+    'accounts',
+    'leads',
+    'emails',
+    'templates',
 ]
 
 MIDDLEWARE = [
@@ -83,7 +87,7 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'djongo',
-#         'NAME': os.environ.get('MONGODB_NAME', 'email-leads-manager'),
+#         'NAME': os.environ.get('MONGODB_NAME', 'crm-marketing-automation-platform'),
 #         'HOST': os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/'),
 #     }
 # }
@@ -131,12 +135,12 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User Model
-AUTH_USER_MODEL = 'api.User'
+AUTH_USER_MODEL = 'users.User'
 
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'api.authentication.JWTAuthentication',
+        'users.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
@@ -162,4 +166,8 @@ JWT_EXPIRATION_DELTA = timedelta(days=7)
 # File upload settings
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+
+# Nylas Settings
+NYLAS_API_KEY = os.environ.get('NYLAS_API_KEY', '')
+NYLAS_API_URI = os.environ.get('NYLAS_API_URI', 'https://api.nylas.com')
 

@@ -1,6 +1,6 @@
-# Leads Manager Server
+# CRM Marketing Automation Platform
 
-Django REST API server for Email Leads Manager application. This is a Python/Django port of the Node.js email-leads-manager-server.
+Django REST API server for CRM Marketing Automation Platform. A comprehensive CRM solution for lead management, email outreach, and marketing automation.
 
 ## Features
 
@@ -40,7 +40,9 @@ DEBUG=True
 JWT_SECRET=your-jwt-secret-key-here
 FRONTEND_URL=http://localhost:3000
 MONGODB_URI=mongodb://localhost:27017/
-MONGODB_NAME=email-leads-manager
+MONGODB_NAME=crm-marketing-automation-platform
+NYLAS_API_KEY=your-nylas-api-key-here
+NYLAS_API_URI=https://api.nylas.com
 ```
 
 5. Run migrations:
@@ -62,37 +64,102 @@ The server will run on `http://localhost:8000` by default.
 
 ## API Endpoints
 
-### Authentication
-- `POST /api/auth/login` - Login user
-- `POST /api/auth/logout` - Logout user
+### Users (Authentication)
+- `POST /api/user/login` - Login user
+- `POST /api/user/logout` - Logout user
 
 ### Leads
-- `GET /api/leads/` - Get all leads (with pagination, search, status, assignedTo filters)
-- `POST /api/leads/` - Create a new lead
-- `POST /api/leads/upload/` - Upload leads from CSV file
-- `GET /api/leads/{id}/` - Get a specific lead
-- `PUT /api/leads/{id}/` - Update a lead
-- `DELETE /api/leads/{id}/` - Delete a lead
+- `GET /api/lead/` - Get all leads (with pagination, search, status, assignedTo filters)
+- `POST /api/lead/` - Create a new lead
+- `POST /api/lead/upload/` - Upload leads from CSV file
+- `GET /api/lead/{id}/` - Get a specific lead
+- `PUT /api/lead/{id}/` - Update a lead
+- `DELETE /api/lead/{id}/` - Delete a lead
 
 ### Accounts
-- `GET /api/accounts/` - Get all accounts (with pagination)
-- `POST /api/accounts/` - Create a new account
-- `GET /api/accounts/{id}/` - Get a specific account
-- `PUT /api/accounts/{id}/` - Update an account
-- `DELETE /api/accounts/{id}/` - Delete an account
+- `GET /api/account/` - Get all accounts (with pagination)
+- `POST /api/account/` - Create a new account
+- `GET /api/account/{id}/` - Get a specific account
+- `PUT /api/account/{id}/` - Update an account
+- `DELETE /api/account/{id}/` - Delete an account
 
 ### Emails
-- `GET /api/emails/` - Get all emails (with pagination and search)
-- `POST /api/emails/` - Create a new email
+- `GET /api/email/` - Get all emails (with pagination and search)
+- `POST /api/email/` - Create a new email
+- `GET /api/email/{id}/` - Get a specific email
+- `PUT /api/email/{id}/` - Update an email
+- `DELETE /api/email/{id}/` - Delete an email
+- `POST /api/email/send/` - Send email via Nylas
 
-### Message Templates
-- `GET /api/message-templates/` - Get all message templates (with pagination, search, industry filters)
-
-### Subject Templates
-- `GET /api/subject-templates/` - Get all subject templates (with pagination and search)
+### Templates
+- `GET /api/template/message/` - Get all message templates (with pagination, search, industry filters)
+- `GET /api/template/subject/` - Get all subject templates (with pagination and search)
 
 ### Health Check
 - `GET /health` - Server health check
+
+## Send Email Endpoint
+
+The send email endpoint (`POST /api/email/send/`) allows you to send emails using Nylas. 
+
+### Request Body
+
+```json
+{
+  "grant_id": "nylas_grant_id_here",
+  "to": ["recipient@example.com"],
+  "subject": "Email Subject",
+  "body": "<html><body><h1>Hello</h1><p>This is the email body in HTML</p></body></html>",
+  "cc": ["cc@example.com"],
+  "bcc": ["bcc@example.com"],
+  "reply_to": ["reply@example.com"],
+  "body_type": "html"
+}
+```
+
+### Required Fields
+- `grant_id`: Nylas grant ID (connected account ID)
+- `to`: Array of recipient email addresses
+- `subject`: Email subject line
+- `body`: Email body content (HTML or plain text)
+
+### Optional Fields
+- `cc`: Array of CC email addresses
+- `bcc`: Array of BCC email addresses
+- `reply_to`: Array of reply-to email addresses
+- `body_type`: Either "html" or "text" (default: "html")
+
+### Response
+
+Success response (200):
+```json
+{
+  "success": true,
+  "message": "Email sent successfully",
+  "data": {
+    "success": true,
+    "message_id": "message_id_from_nylas",
+    "thread_id": "thread_id_from_nylas",
+    "grant_id": "grant_id_used"
+  }
+}
+```
+
+Error response (400/500):
+```json
+{
+  "error": "Error message",
+  "details": "Detailed error information"
+}
+```
+
+### Nylas Setup
+
+1. Sign up for a Nylas account at https://www.nylas.com
+2. Get your API key from the Nylas dashboard
+3. Set up OAuth to connect email accounts and get grant IDs
+4. Add `NYLAS_API_KEY` to your `.env` file
+5. Optionally set `NYLAS_API_URI` if using a custom API URI
 
 ## Database
 
@@ -102,18 +169,44 @@ By default, the project uses SQLite. To use MongoDB, you'll need to:
 
 ## Project Structure
 
+The project is organized into modular Django apps, each handling a specific domain:
+
 ```
-leads-manager-server/
+crm-marketing-automation-platform/
 ├── leads_manager/          # Django project settings
 │   ├── settings.py         # Project settings
 │   ├── urls.py            # Main URL configuration
 │   └── wsgi.py            # WSGI configuration
-├── api/                    # Main application
-│   ├── models.py          # Database models
-│   ├── views.py           # API views/controllers
-│   ├── serializers.py     # DRF serializers
-│   ├── urls.py            # API URL routes
+├── users/                  # User management and authentication module
+│   ├── models.py          # User model
+│   ├── views.py           # Login/logout views
+│   ├── serializers.py     # User serializers
+│   ├── urls.py            # User routes (/api/user/)
 │   ├── authentication.py  # JWT authentication
+│   └── admin.py           # Django admin configuration
+├── accounts/               # Account management module
+│   ├── models.py          # Account model
+│   ├── views.py           # Account views
+│   ├── serializers.py     # Account serializers
+│   ├── urls.py            # Account routes (/api/account/)
+│   └── admin.py           # Django admin configuration
+├── leads/                  # Lead management module
+│   ├── models.py          # Lead model
+│   ├── views.py           # Lead views (including CSV upload)
+│   ├── serializers.py     # Lead serializers
+│   ├── urls.py            # Lead routes (/api/lead/)
+│   └── admin.py           # Django admin configuration
+├── emails/                 # Email management module
+│   ├── models.py          # Email model
+│   ├── views.py           # Email views
+│   ├── serializers.py     # Email serializers
+│   ├── urls.py            # Email routes (/api/email/)
+│   └── admin.py           # Django admin configuration
+├── templates/              # Template management module
+│   ├── models.py          # MessageTemplate and SubjectTemplate models
+│   ├── views.py           # Template views
+│   ├── serializers.py     # Template serializers
+│   ├── urls.py            # Template routes (/api/template/)
 │   └── admin.py           # Django admin configuration
 ├── manage.py              # Django management script
 ├── requirements.txt       # Python dependencies

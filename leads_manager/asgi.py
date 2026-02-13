@@ -1,5 +1,5 @@
 """
-ASGI config for leads_manager project.
+ASGI config for CRM Marketing Automation Platform.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
